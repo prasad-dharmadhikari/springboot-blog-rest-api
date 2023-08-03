@@ -1,10 +1,9 @@
 package com.springboot.blog.payload;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.Set;
 
 /**
  * DTO for {@link com.springboot.blog.entity.Post}
@@ -16,4 +15,5 @@ public class PostDto implements Serializable {
     private String title;
     private String description;
     private String content;
+    private Set<CommentDto> comments;
 }

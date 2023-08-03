@@ -12,10 +12,4 @@ import java.util.Optional;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     List<Comment> findByPostId(long postId);
-
-    @Query(value = "SELECT * FROM comments WHERE post_id = ?1 AND id = ?2", nativeQuery = true)
-    Optional<Comment> findByCommentIdAndPostId(long postId, long id);
-
-
-
 }

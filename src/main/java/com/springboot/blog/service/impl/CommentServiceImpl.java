@@ -55,32 +55,34 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentDto getCommentByPostIdAndCommentId(long postId, long commentId) {
-//        var Comment = commentRepository
-//                .findByCommentIdAndPostId(postId, commentId)
-//                .orElseThrow(() -> new ResourceNotFoundException("Resource not found with given comment id or post", "id", commentId));
-//        return modelMapper.map(Comment, CommentDto.class);
-
-        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
-
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new ResourceNotFoundException("Comment", "id", commentId));
-
-        if (!comment.getPost().getId().equals(post.getId())) {
-            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Comment does not belong to post");
-        }
+        Comment comment = checkIfCommentOrPostExists(postId, commentId);
         return modelMapper.map(comment, CommentDto.class);
     }
 
     @Override
     public CommentDto updateComment(long postId, long commentId, CommentDto commentRequest) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new ResourceNotFoundException("Comment", "id", commentId));
-        if (!comment.getPost().getId().equals(post.getId())) {
-            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Comment does not belong to post");
-        }
+        Comment comment = checkIfCommentOrPostExists(postId, commentId);
         comment.setName(commentRequest.getName());
         comment.setEmail(commentRequest.getEmail());
         comment.setBody(commentRequest.getBody());
         Comment updatedComment = commentRepository.save(comment);
         return modelMapper.map(updatedComment, CommentDto.class);
+    }
+
+    @Override
+    public void deleteComment(long postId, long commentId) {
+        Comment comment = checkIfCommentOrPostExists(postId, commentId);
+        commentRepository.delete(comment);
+    }
+
+    private Comment checkIfCommentOrPostExists(long postId, long commentId) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new ResourceNotFoundException("Comment", "id", commentId));
+        if (!comment.getPost().getId().equals(post.getId())) {
+            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Comment does not belong to post");
+        }
+        else {
+            return comment;
+        }
     }
 }

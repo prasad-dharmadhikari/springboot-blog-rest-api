@@ -17,8 +17,10 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CommentDto implements Serializable {
+
     private Long id;
 
+    @NotEmpty
     private String name;
 
     @NotNull(message = "Email should not be null")

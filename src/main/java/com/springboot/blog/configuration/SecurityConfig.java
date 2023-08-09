@@ -40,6 +40,7 @@ public class SecurityConfig {
                 authorizeHttpRequests(
                         // Permission for all users to access to all GET Endpoints
                         authorized -> authorized.requestMatchers(HttpMethod.GET,"/api/**").permitAll()
+                                                .requestMatchers("/api/auth/**").permitAll()
                                 // Apart from above methods, all requests should be authenticated
                                 .anyRequest().authenticated()
                 )//authorized.anyRequest().authenticated())

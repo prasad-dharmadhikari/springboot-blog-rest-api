@@ -2,6 +2,7 @@ package com.springboot.blog.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.springboot.blog.payload.PostDto;
 import com.springboot.blog.payload.PostResponse;
 import com.springboot.blog.service.PostService;
@@ -49,13 +50,13 @@ public class PostController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletePost(@PathVariable(name = "id") long id) throws JsonProcessingException {
+    public ResponseEntity<ObjectNode> deletePost(@PathVariable(name = "id") long id) throws JsonProcessingException {
         postService.deletePost(id);
         ObjectMapper objectMapper = new ObjectMapper();
         var objectNode = objectMapper.createObjectNode();
         objectNode.put("message", "Post deleted successfully...");
         String json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(objectNode);
-        return new ResponseEntity<>(json, HttpStatus.OK);
+        return new ResponseEntity<>(objectNode, HttpStatus.OK);
     }
 
     @GetMapping("/pagination")

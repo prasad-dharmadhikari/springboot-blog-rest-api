@@ -1,5 +1,6 @@
 package com.springboot.blog.payload;
 
+import com.springboot.blog.entity.Category;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -23,5 +24,8 @@ public class PostDto implements Serializable {
     private String description;
     @NotEmpty
     private String content;
+
     private Set<CommentDto> comments;
+
+    private CategoryDto category;
 }

@@ -2,6 +2,7 @@ package com.springboot.blog.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.springboot.blog.payload.JwtAuthResponseDto;
 import com.springboot.blog.payload.LoginDto;
 import com.springboot.blog.payload.RegisterDto;
 import com.springboot.blog.service.AuthService;
@@ -25,11 +26,10 @@ public class AuthController {
 
     // Build login rest api
     @PostMapping(value = {"login","sign-in"})
-    public ResponseEntity<ObjectNode> login(@RequestBody LoginDto loginDto) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        var objectNode = objectMapper.createObjectNode();
-        objectNode.put("message", authService.login(loginDto));
-        return ResponseEntity.ok(objectNode);
+    public ResponseEntity<JwtAuthResponseDto> login(@RequestBody LoginDto loginDto) {
+        JwtAuthResponseDto jwtAuthResponseDto = new JwtAuthResponseDto();
+        jwtAuthResponseDto.setAccessToken(authService.login(loginDto));
+        return ResponseEntity.ok(jwtAuthResponseDto);
     }
     // Build Register rest api
     @PostMapping(value = {"register","sign-up"})

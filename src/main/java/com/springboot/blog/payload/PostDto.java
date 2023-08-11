@@ -1,9 +1,7 @@
 package com.springboot.blog.payload;
 
 import com.springboot.blog.entity.Category;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -27,5 +25,9 @@ public class PostDto implements Serializable {
 
     private Set<CommentDto> comments;
 
-    private CategoryDto category;
+    //@NotEmpty(message = "Category should not be empty")
+    //@NotBlank(message = "Category should not be blank")
+    @NotNull(message = "Category should not be null, blank or empty")
+    @Min(1)
+    private Long categoryId;
 }

@@ -1,10 +1,12 @@
 package com.springboot.blog.service.impl;
 
 import com.springboot.blog.configuration.ModelMapperConfiguration;
+import com.springboot.blog.entity.Category;
 import com.springboot.blog.entity.Post;
 import com.springboot.blog.exception.ResourceNotFoundException;
 import com.springboot.blog.payload.PostDto;
 import com.springboot.blog.payload.PostResponse;
+import com.springboot.blog.repository.CategoryRepository;
 import com.springboot.blog.repository.PostRepository;
 import com.springboot.blog.service.PostService;
 import org.modelmapper.ModelMapper;
@@ -23,13 +25,19 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private PostRepository postRepository;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
+
     public PostServiceImpl() {
         this.modelMapper = new ModelMapperConfiguration().getModelMapper();
     }
 
     @Override
     public PostDto createPost(PostDto postDto) {
+        final var category = categoryRepository.findById(postDto.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "Id", postDto.getCategoryId()));
         Post post = modelMapper.map(postDto, Post.class);
+        post.setCategory(category);
         Post savedPost = postRepository.save(post);
         return modelMapper.map(savedPost, PostDto.class);
     }

@@ -115,4 +115,15 @@ public class PostServiceImpl implements PostService {
                 .map((element) -> modelMapper.map(element, PostDto.class))
                 .toList();
     }
+
+    @Override
+    public List<PostDto> getPostsByCategory(Long categoryId) {
+        categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoryId));
+        return postRepository.findByCategory_Id(categoryId)
+                .stream()
+                .map(post -> modelMapper.map(post, PostDto.class))
+                .collect(Collectors.toList());
+
+    }
 }

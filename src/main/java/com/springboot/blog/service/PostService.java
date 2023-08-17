@@ -19,4 +19,6 @@ public interface PostService {
     PostResponse getAllPostsWithPagination(int pageNo, int pageSize);
 
     List<PostDto> getPostsBySort(String sortBy,String sortOrder);
+
+    List<PostDto> getPostsByCategory(Long categoryId);
 }

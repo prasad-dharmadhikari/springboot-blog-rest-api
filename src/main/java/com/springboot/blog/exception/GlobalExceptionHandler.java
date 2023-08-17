@@ -1,6 +1,7 @@
 package com.springboot.blog.exception;
 
 import com.springboot.blog.payload.ErrorDetails;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import org.springframework.web.server.handler.ResponseStatusExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.Date;
@@ -47,13 +47,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                                                                   HttpHeaders headers,
                                                                   HttpStatusCode status,
                                                                   WebRequest request) {
-        Map<String,String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach(error ->{
-            String fieldName = ((FieldError)error).getField();
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach(error -> {
+            String fieldName = ((FieldError) error).getField();
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-        return new ResponseEntity<>(errors,HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
@@ -71,6 +71,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ErrorDetails> handleBadCredentialsException(MethodArgumentTypeMismatchException exception, WebRequest webRequest) {
         ErrorDetails details = new ErrorDetails(new Date(), "Argument Type Mismatch, enter argument with required data type", webRequest.getDescription(false));
+        return new ResponseEntity<>(details, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorDetails> handleDuplicateDataException(DataIntegrityViolationException exception, WebRequest webRequest) {
+        ErrorDetails details = new ErrorDetails(new Date(), "Duplicate Entry for the field ", webRequest.getDescription(false));
         return new ResponseEntity<>(details, HttpStatus.BAD_REQUEST);
     }
 

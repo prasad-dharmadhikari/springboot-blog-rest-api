@@ -74,4 +74,9 @@ public class PostController {
             ) {
         return ResponseEntity.ok(postService.getPostsBySort(sortBy,sortOrder));
     }
+
+    @GetMapping("/category/{id}")
+    public ResponseEntity<List<PostDto>> getPostsByCategory(@PathVariable("id") Long categoryId) {
+        return ResponseEntity.ok(postService.getPostsByCategory(categoryId));
+    }
 }
